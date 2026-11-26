@@ -1,0 +1,19 @@
+# 배포(app.enc 등 변경)할 때마다 jsDelivr 저장본을 지워서 사용자에게 바로 최신본이 가게 함
+name: purge-cdn
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: purge jsDelivr
+        run: |
+          for f in app.enc version.json templates/1.enc templates/2.enc templates/3.enc templates/4.enc; do
+            for i in 1 2 3; do
+              curl -s "https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/$f" && break
+              sleep 5
+            done
+            echo
+          done
